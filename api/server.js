@@ -4,6 +4,8 @@ const app = express()
 const path = require('path')
 //连接数据库
 const con = require('./db/connect')
+// 链接socket
+const ws = require("./module/socket");
 
 //基本插件
 //post 请求
