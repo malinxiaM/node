@@ -11,7 +11,8 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({extended:true}))
 //静态文件
 app.use('/public',express.static(path.join(__dirname,'./public')))
-
+const adminUpload = require('./router/uploadRouter')
+app.use('/admin/upload',adminUpload)
 app.listen(3000,()=>{
     console.log('severe start in port:' + 3000)
 })
