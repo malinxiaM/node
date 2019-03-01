@@ -12,7 +12,7 @@ let transporter = nodemailer.createTransport({
     }
 });
 
-function sendEmail(toMail,code){
+function send(toMail,code){
     return new Promise((resolve,reject)=>{
         // setup email data with unicode symbols
         let mailOptions = {
@@ -40,4 +40,4 @@ function sendEmail(toMail,code){
 //     console.log(err)
 // })
 
-module.exports={sendEmail};
+module.exports={send};
