@@ -355,22 +355,6 @@
 
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript">
-// 前后端交互socket
-const ws = new WebSocket('ws://localhost:8080/');
-// 链接上服务器：
-ws.onopen = ()=>{
-	ws.send("我来也");
-}
-// 关闭服务器
-ws.onclose = (()=>{
-	ws.send("我走了");
-});
-// 接收服务器端发来的消息
-ws.onmessage = ((msg)=>{
-	console.log(msg.data);
-	// alert(data);
-})
-
 
 </script>
 <!--/请在上方写此页面业务相关的脚本-->
