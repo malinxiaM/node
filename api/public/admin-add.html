@@ -64,11 +64,11 @@
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">角色：</label>
 			<div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">
-				<select class="select" name="adminRole" size="1" id="type">
-					<option value="0">超级管理员</option>
+				<select id="Jurisdiction_name" class="select" name="adminRole" size="1" id="type" >
+					<!-- <option value="0">超级管理员</option>
 					<option value="1">总编</option>
 					<option value="2">栏目主辑</option>
-					<option value="3">栏目编辑</option>
+					<option value="3">栏目编辑</option> -->
 				</select>
 				</span> </div>
 		</div>
@@ -110,7 +110,7 @@ function addFood(){
 			  type:$('#type').val(),
 			  date:$('#date').val(),
 			  email:$('#email').val()}
-	if($('#adminName').val() == "" || $('#phone').val() == "" || $('#type').val() == "" || $('#date').val() == "" || $('#email').val() == "" || $('#password').val())
+	// if($('#adminName').val() == "" || $('#phone').val() == "" || $('#type').val() == "" || $('#date').val() == "" || $('#email').val() == "" || $('#password').val())
 	return false;	  
     $.post(OL_Action_Root+'/admin/food/addpersonnel',data,(res)=>{
         alert(res.msg)
@@ -119,6 +119,28 @@ function addFood(){
     window.parent.location.reload();
 }
 
+function Jurisdictionname(){
+	
+	$.post(OL_Action_Root+'/admin/food/getJurisdiction',{},(res)=>{
+		if(res.err!==0){ return false}	
+		rendList(res.data);	
+		console.log(res.data);
+	})
+}
+
+//渲染页面数据（拼接）
+function  rendList(data){
+	let list=''
+	for (let index = 0; index < data.length; index++) {
+		console.log(data[index].name);
+		let tmp=`
+		<option value="${index}">${data[index].name}</option>
+		`
+		list += tmp
+	}
+    $('#Jurisdiction_name').html(list)
+}
+Jurisdictionname();
 
 /*--------------------------自己-----------------------------------------------*/
 $(function(){

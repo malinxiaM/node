@@ -280,7 +280,6 @@ router.post('/getJurisdictionlById',(req,res)=>{
   let {_id}=req.body
   JurisdictionModel.find({_id})
   .then((data)=>{
-    console.log(data)
     utils.sendRes(res,0,'select ok',data)
   })
   .catch((err)=>{

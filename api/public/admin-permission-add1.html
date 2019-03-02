@@ -71,8 +71,8 @@ console.log(id);
 function updatapersonnel(even){
 	var e = even || window.event;
       e.preventDefault();
-	// alert("刷新父级的时候会自动关闭弹层。")
-    // window.parent.location.reload();
+	
+    
     //修改新的食品信息
     let data={name:$('#name').val(),
 	Jurisdiction:$('#Jurisdiction').val(),
@@ -82,7 +82,9 @@ function updatapersonnel(even){
     $.post(OL_Action_Root+'/admin/food/updataJurisdiction',data,(res)=>{
 		console.log(1)
         alert(res.msg)
-    })
+	})
+	// ("刷新父级的时候会自动关闭弹层。")
+	window.parent.location.reload();
 }
 
 
