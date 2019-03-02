@@ -7,7 +7,8 @@ const utils=require('../util/util')
 //数据模型
 const foodModel=require('../db/module/foodModel') 
 const personnelModel=require('../db/module/personnelModel') 
-const menberlModel=require('../db/module/menberlModel') 
+const menberlModel=require('../db/module/menberlModel')
+const JurisdictionModel = require('../db/module/JurisdictionlModel')
 /* 添加*/
 router.post('/addfood',(req,res)=>{
     //接受数据
@@ -41,9 +42,24 @@ router.post('/addpersonnel',(req,res)=>{
 /* 添加会员*/
 router.post('/addmenber',(req,res)=>{
   //接收数据(名字，密码，权限，邮箱，手机,性别，时间)
-  let {name,password,type,email,num,sex,date}= req.body
+  let {name,password,email,num,sex,date}= req.body
   //处理数据
-  menberlModel.insertMany({name,password,type,email,num:Number(num),sex,date})
+  menberlModel.insertMany({name,password,email,num:Number(num),sex,date})
+  //返回数据
+  .then((data)=>{
+    utils.sendRes(res,0,'add ok',null)
+  })
+  .catch((err)=>{
+      utils.log(err)
+      utils.sendRes(res,-1,err._message,null)})
+})
+/* 添加节点*/
+router.post('/addJurisdiction',(req,res)=>{
+  //接收数据(名字，节点)
+  let {name,Jurisdiction}= req.body
+  console.log(Jurisdiction);
+  //处理数据
+  JurisdictionModel.insertMany({name,Jurisdiction})
   //返回数据
   .then((data)=>{
     utils.sendRes(res,0,'add ok',null)
@@ -59,8 +75,7 @@ router.post('/updatafood',(req,res)=>{
   //声明_id
     let _id =req.body._id;
    //结构赋值声明修改数据
-   let {name,price,imgPath,desc,ntypeum,type,num} = req.body;
-   console.log(`修改的值：${name},${price},${imgPath},${desc},${type},${ntypeum},${type},${num}`);
+   let {name,price,imgPath,desc,type,num} = req.body;
    //把值传入数据模型
    foodModel.updateOne({_id:_id},{name,price,imgPath,desc,type,num})
    .then((date) =>{
@@ -100,9 +115,9 @@ router.post('/updatamenber',(req,res)=>{
     let _id =req.body._id;
    //结构赋值声明修改数据
    //接收数据(名字，密码，权限，邮箱，手机,性别，时间)
-  let {name,password,type,email,num,sex,date}= req.body
+  let {name,password,email,num,sex,date}= req.body
    //把值传入数据模型
-   menberlModel.updateOne({_id:_id},{name,password,type,email,num,sex,date})
+   menberlModel.updateOne({_id:_id},{name,password,email,num,sex,date})
    .then((date) =>{
       utils.log(date);
      //返回值
@@ -114,6 +129,25 @@ router.post('/updatamenber',(req,res)=>{
    })
 })
 
+/*修改节点*/
+router.post('/updataJurisdiction',(req,res)=>{
+  //声明_id
+    let _id =req.body._id;
+   //结构赋值声明修改数据
+   //接收数据(名字，节点)
+  let {name,Jurisdiction}= req.body
+   //把值传入数据模型
+   JurisdictionModel.updateOne({_id:_id},{name,Jurisdiction})
+   .then((date) =>{
+      utils.log(date);
+     //返回值
+     utils.sendRes(res,0,"up ok",null);
+   })
+   .catch((err) => {
+      utils.log(err);
+      utils.sendRes(res,-1,err._message,null);
+   })
+})
 
 /*删除 单独删除 */
 router.post("/remove",(req,res) =>{ 
@@ -163,6 +197,22 @@ router.post("/remove_menber",(req,res) =>{
   })
 })
 
+/*删除 删除节点 */
+router.post("/removeJurisdiction",(req,res) =>{ 
+  //接收数据
+  let _id =req.body._id;
+  //向数据模型传输数据
+  JurisdictionModel.deleteMany({_id:_id})
+  .then((data) =>{
+      utils.log(data);
+      utils.sendRes(res,0,'remove ok',null)
+  })
+  .catch((err) =>{
+    utils.log(err)
+    utils.sendRes(res,-1,err._message,null)
+  })
+})
+
 
 /* 查询  */
 router.post('/getfood',(req,res)=>{
@@ -200,10 +250,35 @@ router.post('/getmenber',(req,res)=>{
       utils.sendRes(res,-1,err._message,null)})
 })
 
+/* 查询节点  */
+router.post('/getJurisdiction',(req,res)=>{
+  JurisdictionModel.find()
+  .then((data)=>{
+    console.log(data)
+    utils.sendRes(res,0,'select ok',data)
+  })
+  .catch((err)=>{
+      utils.log(err)
+      utils.sendRes(res,-1,err._message,null)})
+})
+
 //根据id 查询一条数据
 router.post('/getpersonnelById',(req,res)=>{
   let {_id}=req.body
   personnelModel.find({_id})
+  .then((data)=>{
+    console.log(data)
+    utils.sendRes(res,0,'select ok',data)
+  })
+  .catch((err)=>{
+      utils.log(err)
+      utils.sendRes(res,-1,err._message,null)})
+})
+
+//根据id 查询一条数据
+router.post('/getJurisdictionlById',(req,res)=>{
+  let {_id}=req.body
+  JurisdictionModel.find({_id})
   .then((data)=>{
     console.log(data)
     utils.sendRes(res,0,'select ok',data)
@@ -257,4 +332,22 @@ router.post("/getpersonnelByPage" ,(req,res) =>{
       utils.sendRes(res,-1,err._message,null)
   })
 })
+
+//模糊查询  关键字查询
+router.post("/getJurisdictionBykw",(req,res) =>{
+  //接收关键字数据
+  let {keyword} = req.body;
+  //把关键字放入正则
+  let reg = new RegExp(keyword);
+  //查询（$or 表示或）
+  JurisdictionModel.find({name:{$regex:reg}})
+  .then((data)=>{
+    console.log(data)
+    utils.sendRes(res,0,'select ok',data)
+  })
+  .catch((err)=>{
+      utils.log(err)
+      utils.sendRes(res,-1,err._message,null)})
+})
+
 module.exports=router

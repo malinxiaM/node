@@ -31,56 +31,20 @@
 <article class="cl pd-20">
 	<form action="" method="post" class="form form-horizontal" id="form-admin-add">
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>管理员：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限名称</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" value="" placeholder="" id="adminName" name="adminName">
+				<input type="text" class="input-text" value="" placeholder="" id="name" name="adminName">
 			</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>初始密码：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>节点名：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="password" class="input-text" autocomplete="off" value="" placeholder="密码" id="password" name="password">
+				<input type="text" class="input-text" autocomplete="off" value="" placeholder="例：1" id="Jurisdiction" name="node">
 			</div>
 		</div>
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<input type="password" class="input-text" autocomplete="off"  placeholder="确认新密码" id="password2" name="password2">
-			</div>
-		</div>
-
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>手机：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" value="" placeholder="" id="phone" name="phone">
-			</div>
-		</div>
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>邮箱：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" placeholder="@" name="email" id="email">
-			</div>
-		</div>
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">角色：</label>
-			<div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">
-				<select class="select" name="adminRole" size="1" id="type">
-					<option value="0">超级管理员</option>
-					<option value="1">总编</option>
-					<option value="2">栏目主辑</option>
-					<option value="3">栏目编辑</option>
-				</select>
-				</span> </div>
-		</div>
-		<div class="row cl">
-				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>加入时间</label>
-				<div class="formControls col-xs-8 col-sm-9">
-					<input type="text" class="input-text" placeholder="例：2041-01-01" name="date" id="date">
-				</div>
-			</div>
 		<div class="row cl">
 			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-				<input onClick="addFood();" class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+				<input onClick="updatapersonnel();" class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
 			</div>
 		</div>
 	</form>
@@ -102,23 +66,39 @@
 
 /*--------------------------自己-----------------------------------------------*/
 let OL_Action_Root='http://localhost:3000';
-function addFood(){
-    //添加新的食品信息
-    let data={name:$('#adminName').val(),
-              password:$('#password').val(),
-              num:$('#phone').val(),
-			  type:$('#type').val(),
-			  date:$('#date').val(),
-			  email:$('#email').val()}
-	if($('#adminName').val() == "" || $('#phone').val() == "" || $('#type').val() == "" || $('#date').val() == "" || $('#email').val() == "" || $('#password').val())
-	return false;	  
-    $.post(OL_Action_Root+'/admin/food/addpersonnel',data,(res)=>{
-        alert(res.msg)
-	})
+let id=localStorage.getItem('_idn');
+console.log(id);
+function updatapersonnel(even){
+	var e = even || window.event;
+      e.preventDefault();
 	// alert("刷新父级的时候会自动关闭弹层。")
-    window.parent.location.reload();
+    // window.parent.location.reload();
+    //修改新的食品信息
+    let data={name:$('#name').val(),
+	Jurisdiction:$('#Jurisdiction').val(),
+			  _id:id
+              }
+			  
+    $.post(OL_Action_Root+'/admin/food/updataJurisdiction',data,(res)=>{
+		console.log(1)
+        alert(res.msg)
+    })
 }
 
+
+//根据当前的id 获取相关食品信息  写入到页面
+function getFoodData(){
+    $.post(OL_Action_Root+'/admin/food/getJurisdictionlById',{_id:id},function(res){
+       console.log(res)
+       if(res.err==0){
+		   //修改页面的数据信息
+		   console.log(res.data[0].name);
+           $('#name').val(res.data[0].name)
+           $('#Jurisdiction').val(res.data[0].Jurisdiction)
+       }
+    })
+}
+getFoodData();
 
 /*--------------------------自己-----------------------------------------------*/
 $(function(){
